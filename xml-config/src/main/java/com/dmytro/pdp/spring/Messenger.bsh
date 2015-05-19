@@ -1,0 +1,3 @@
+String printFinalMessage() {
+        return "BeanShell message 'Hello'";
+    }

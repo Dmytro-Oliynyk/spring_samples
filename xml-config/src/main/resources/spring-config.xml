@@ -1,0 +1,73 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:lang="http://www.springframework.org/schema/lang"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd">
+
+    <bean id="propertyConfigure" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="application.properties"/>
+    </bean>
+
+    <bean id="jon" autowire="constructor" class="com.dmytro.pdp.spring.User">
+        <constructor-arg value="Jon"/>
+        <constructor-arg value="Dou"/>
+    </bean>
+
+    <bean id="ken" autowire="constructor" class="com.dmytro.pdp.spring.User">
+        <constructor-arg value="Ken"/>
+        <constructor-arg value="#{jon.lastName}"/>
+        <property name="password" value="#{'ken_password'+'-'+ T(java.lang.Math).PI}"/>
+    </bean>
+
+    <bean id="bob" class="com.dmytro.pdp.spring.User">
+        <property name="firstName" value="#{'Bob'}"/>
+        <property name="lastName" value="Dou"/>
+        <property name="password" value="#{jon.getPassword()?.toUpperCase()+'-'+ ken.password?.toUpperCase()+ '-'+ 98}"/>
+    </bean>
+
+    <bean id="userTemplate" abstract="true" class="com.dmytro.pdp.spring.User">
+        <property name="lastName" value="Dou"/>
+        <property name="firstName" value="${clone.name}-#{T(java.lang.Math).random()*100}"/>
+        <property name="password" value="#{'password'+'-'+ T(java.lang.Math).PI}"/>
+    </bean>
+
+
+    <bean id="clon_1" parent="userTemplate"/>
+    <bean id="clon_2" parent="userTemplate"/>
+    <bean id="clon_3" parent="userTemplate"/>
+
+  <!--  <lang:jruby id="messenger"
+            script-source="classpath:com/dmytro/pdp/spring/Messenger.rb"
+            script-interfaces="com.dmytro.pdp.spring.Messenger"/>-->
+    <!--<lang:groovy id="messenger" script-source="classpath:com/dmytro/pdp/spring/Messenger.groovy"/>-->
+    <!--<lang:bsh id="messenger"
+              script-source="classpath:com/dmytro/pdp/spring/Messenger.bsh"
+              script-interfaces="com.dmytro.pdp.spring.Messenger"/>-->
+    <bean id="messenger" class="com.dmytro.pdp.spring.MessengerImpl"/>
+
+    <bean id="usersSet" class="com.dmytro.pdp.spring.UserManager">
+        <property name="messenger" ref="messenger"/>
+        <property name="users">
+            <set>
+                <ref bean="jon"/>
+                <ref bean="ken"/>
+                <ref bean="bob"/>
+                <ref bean="clon_1"/>
+                <ref bean="clon_2"/>
+                <ref bean="clon_3"/>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="aspect" class="com.dmytro.pdp.spring.Listener"/>
+    <aop:config>
+        <aop:aspect ref="aspect">
+            <aop:pointcut id="init" expression="execution(* com.dmytro.pdp.spring.UserManager.*())"/>
+            <aop:before pointcut-ref="init" method="before"/>
+            <aop:after pointcut-ref="init" method="after"/>
+        </aop:aspect>
+    </aop:config>
+</beans>
