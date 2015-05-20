@@ -5,7 +5,9 @@ package com.dmytro.pdp.spring;
  */
 public interface Messenger {
 
-    default String printFinalMessage(){
+    default String printFinalMessage() {
         return "Java message 'Hello'";
-    };
+    }
+
+    ;
 }

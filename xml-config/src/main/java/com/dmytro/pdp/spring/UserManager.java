@@ -8,7 +8,7 @@ import java.util.Set;
  * Created by Dmytro_Olijnyk on 5/15/2015.
  */
 public class UserManager {
-    private Set<User> users ;
+    private Set<User> users;
     private Messenger messenger;
 
     public UserManager() {
@@ -23,17 +23,13 @@ public class UserManager {
 
     public void addListOfUsersToLine(Collection<User> users) {
         initIfNotExist();
-        users.stream().forEach(user->this.users.add(user));
+        users.stream().forEach(user -> this.users.add(user));
     }
 
     private void initIfNotExist() {
         if (users == null) {
             this.users = new HashSet<User>();
         }
-    }
-
-    public void setUsers(Set<User> users) {
-        addListOfUsersToLine(users);
     }
 
     public void setMessenger(Messenger messenger) {
@@ -44,13 +40,17 @@ public class UserManager {
         return users;
     }
 
-    public String printInfo(){
+    public void setUsers(Set<User> users) {
+        addListOfUsersToLine(users);
+    }
+
+    public String printInfo() {
         StringBuffer buffer = new StringBuffer();
-         getUsers().stream().forEach(user -> {
-           buffer.append(user.toString());
-             buffer.append("\n");
-       });
+        getUsers().stream().forEach(user -> {
+            buffer.append(user.toString());
+            buffer.append("\n");
+        });
         buffer.append(messenger.printFinalMessage());
-      return buffer.toString();
+        return buffer.toString();
     }
 }
