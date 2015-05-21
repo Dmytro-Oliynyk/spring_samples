@@ -5,7 +5,6 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertNotNull;
@@ -28,12 +27,8 @@ public class StepDefinitions implements En {
             log.info("UserManagerTest: init object");
         });
         Then("^My user (.*) (.*) is in line$", (String firstName, String lastName) -> {
-            Stream<User> userStream = this.manager.getUsers().stream().filter(new Predicate<User>() {
-                @Override
-                public boolean test(User user) {
-                    return user.getFirstName().equals(firstName) && user.getLastName().equals(lastName);
-                }
-            });
+            Stream<User> userStream = this.manager.getUsers().stream().filter(user ->
+                    user.getFirstName().equals(firstName) && user.getLastName().equals(lastName));
             assertNotNull(userStream);
             log.info(this.manager.printInfo());
             log.info("UserManagerTest: END");
