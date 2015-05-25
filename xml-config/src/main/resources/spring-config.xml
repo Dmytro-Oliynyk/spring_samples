@@ -67,7 +67,7 @@
     <bean id="aspect" class="com.dmytro.pdp.spring.Listener"/>
     <aop:config>
         <aop:aspect ref="aspect">
-            <aop:pointcut id="init" expression="execution(* com.dmytro.pdp.spring.UserManager.*())"/>
+            <aop:pointcut id="init" expression="execution(* com.dmytro.pdp.spring.UserManager.printInfo(..))"/>
             <aop:before pointcut-ref="init" method="before"/>
             <aop:after pointcut-ref="init" method="after"/>
         </aop:aspect>
