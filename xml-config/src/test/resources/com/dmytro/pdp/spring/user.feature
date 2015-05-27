@@ -1,4 +1,4 @@
-Feature: User manager
+Feature: PDP
 
   Scenario:  User manager flow
     Given I init spring context from spring-config.xml
